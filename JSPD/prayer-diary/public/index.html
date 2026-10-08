@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5e6c8" />
+    <title>Prayer Diary</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" type="image/png" href="/assets/jesus/diary.png" />
+  </head>
+  <body>
+    <header class="site-heading">✝ Jesus' Prayer Diary</header>
+    <header class="verse-banner">
+      <p>
+        "But if we judged ourselves truly, we would not be judged."
+        <span> — 1 Corinthians 11:31</span>
+      </p>
+    </header>
+
+    <main class="app-layout main-content" aria-live="polite">
+      <section class="view active" data-view="home" id="view-home">
+        <div class="top-row">
+          <h2 class="page-title">Home</h2>
+          <div id="homeDate" class="date-chip"></div>
+        </div>
+
+        <article class="card hero-card">
+          <div class="mascot-frame" aria-hidden="true">
+            <img
+              class="mascot-image home-mascot"
+              alt="Cute Jesus"
+              src="assets/jesus/cute-jesus.png"
+              loading="eager"
+              style="width: 130px; object-fit: contain"
+            />
+          </div>
+
+          <div>
+            <p class="speech" id="homeGreeting">
+              Good morning, beloved! How was your walk with Me today? 🕊️
+            </p>
+            <div class="status-row">
+              <div class="status-badge pending" id="todayStatus">Not yet</div>
+              <button id="startCheckinBtn" class="btn btn-primary">
+                Start today's check-in
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <article class="card verse-card">
+          <h3>Verse of the Day</h3>
+          <p id="dailyVerseText"></p>
+        </article>
+      </section>
+
+      <section class="view" data-view="checkin" id="view-checkin">
+        <div class="top-row">
+          <h2 class="section-title">Daily Check-in</h2>
+          <div class="progress-dots" id="progressDots"></div>
+        </div>
+
+        <article class="card checkin-hero">
+          <div class="mascot-frame" aria-hidden="true">
+            <img
+              class="mascot-image checkin-mascot"
+              alt="Cute Jesus"
+              src="assets/jesus/cute-jesus.png"
+              loading="eager"
+              style="width: 90px; object-fit: contain"
+            />
+          </div>
+          <p class="speech" id="checkinSpeech">
+            How was your day with Me today? 🕊️
+          </p>
+        </article>
+
+        <div id="wizardRoot" class="wizard-root">
+          <article class="wizard-step active" data-step="1">
+            <h3>How was your day?</h3>
+            <div id="moodOptions" class="option-grid options-grid"></div>
+          </article>
+
+          <article class="wizard-step" data-step="2">
+            <h3>How productive were you?</h3>
+            <div id="productivityOptions" class="pill-grid"></div>
+          </article>
+
+          <article class="wizard-step" data-step="3">
+            <h3>How much time did you spend with Me today?</h3>
+            <div id="godTimeOptions" class="option-grid options-grid"></div>
+          </article>
+
+          <article class="wizard-step" data-step="4">
+            <h3>Time with your family today?</h3>
+            <div id="familyTimeOptions" class="option-grid options-grid"></div>
+          </article>
+
+          <article class="wizard-step" data-step="5">
+            <h3>Write your diary</h3>
+            <div class="diary-wrap">
+              <textarea
+                id="diaryText"
+                spellcheck="true"
+                maxlength="3000"
+                placeholder="Write your heart here..."
+              ></textarea>
+            </div>
+            <div class="row-between wizard-nav">
+              <span id="charCounter">0 / 3000</span>
+              <button class="btn btn-primary" id="saveEntryBtn">
+                Save Entry
+              </button>
+            </div>
+          </article>
+        </div>
+
+        <div class="row-between wizard-nav">
+          <button class="btn btn-ghost" id="prevStepBtn">Previous</button>
+          <button class="btn btn-primary" id="nextStepBtn">Next</button>
+        </div>
+
+        <article id="checkinDone" class="card done-card hidden">
+          <div class="mascot-frame" aria-hidden="true">
+            <img
+              class="mascot-image done-mascot"
+              alt="Cute Jesus"
+              src="assets/jesus/cute-jesus.png"
+              loading="eager"
+              style="width: 90px; object-fit: contain"
+            />
+          </div>
+          <h3>Wonderful! Your day is recorded. See you tomorrow! 🙏</h3>
+        </article>
+      </section>
+
+      <section class="view" data-view="journal" id="view-journal">
+        <div class="top-row">
+          <h2 class="section-title">Journal</h2>
+          <div class="mascot-frame" aria-hidden="true">
+            <img
+              class="mascot-image journal-mascot"
+              alt="Cute Jesus"
+              src="assets/jesus/cute-jesus.png"
+              loading="eager"
+              style="width: 80px; object-fit: contain"
+            />
+          </div>
+        </div>
+
+        <article class="card filters-card">
+          <input
+            id="journalSearch"
+            type="search"
+            placeholder="Search diary text..."
+          />
+          <div class="filter-grid">
+            <label>From <input id="journalStart" type="date" /></label>
+            <label>To <input id="journalEnd" type="date" /></label>
+          </div>
+          <div class="row-between">
+            <button class="btn btn-primary" id="applyJournalFilter">
+              Apply
+            </button>
+            <button class="btn btn-ghost" id="resetJournalFilter">Reset</button>
+          </div>
+        </article>
+
+        <div id="journalList" class="list-stack"></div>
+      </section>
+
+      <section class="view" data-view="prayers" id="view-prayers">
+        <div class="top-row">
+          <h2 class="section-title">Prayer Wall</h2>
+          <button class="btn btn-primary" id="addPrayerBtn">
+            + Add Prayer
+          </button>
+        </div>
+
+        <article class="card hero-card">
+          <div class="mascot-frame" aria-hidden="true">
+            <img
+              class="mascot-image prayers-mascot"
+              alt="Jesus holding paper"
+              src="assets/jesus/jesus-holding-empty-paper.jpg"
+              loading="eager"
+              style="width: 110px; object-fit: contain"
+            />
+          </div>
+          <p class="speech">I hear every prayer you bring to Me. 🕊️</p>
+        </article>
+
+        <div class="prayer-columns">
+          <article class="card prayer-col">
+            <h3>🙏 Pending</h3>
+            <div id="pendingPrayers" class="list-stack"></div>
+          </article>
+          <article class="card prayer-col">
+            <h3>✅ Answered</h3>
+            <div id="answeredPrayers" class="list-stack"></div>
+          </article>
+          <article class="card prayer-col">
+            <h3>❌ Denied / Different path</h3>
+            <div id="deniedPrayers" class="list-stack"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" data-view="stats" id="view-stats">
+        <div class="top-row">
+          <h2 class="section-title">Stats</h2>
+          <div class="mascot-frame tiny" aria-hidden="false">
+            <img
+              class="mascot-image stats-mascot"
+              alt="Jesus with open hands"
+              src="assets/jesus/jesus-with-open-hands.png"
+              loading="eager"
+              style="width: 110px; object-fit: contain"
+            />
+          </div>
+        </div>
+
+        <article class="card heatmap-card">
+          <h3>Mood heatmap</h3>
+          <div id="moodHeatmap" class="heatmap"></div>
+        </article>
+        <article class="card heatmap-card">
+          <h3>Productivity heatmap</h3>
+          <div id="productivityHeatmap" class="heatmap"></div>
+        </article>
+        <article class="card heatmap-card">
+          <h3>Time with God heatmap</h3>
+          <div id="godHeatmap" class="heatmap"></div>
+        </article>
+        <article class="card heatmap-card">
+          <h3>Time with Family heatmap</h3>
+          <div id="familyHeatmap" class="heatmap"></div>
+        </article>
+
+        <div id="statsSummary" class="summary-grid"></div>
+      </section>
+
+      <section class="view" data-view="settings" id="view-settings">
+        <div class="top-row">
+          <h2 class="section-title">Settings</h2>
+        </div>
+
+        <article class="card settings-card">
+          <label>Your name</label>
+          <div class="row-between">
+            <input
+              id="nameInput"
+              type="text"
+              maxlength="40"
+              placeholder="Your name"
+            />
+            <button id="saveNameBtn" class="btn btn-primary">Save</button>
+          </div>
+        </article>
+
+        <article class="card settings-card">
+          <label class="row-between">
+            <span>Dark mode</span>
+            <input id="darkModeToggle" type="checkbox" />
+          </label>
+        </article>
+
+        <article class="card settings-card">
+          <h3>Data</h3>
+          <div class="settings-actions">
+            <button id="exportBtn" class="btn btn-ghost">
+              Export all data
+            </button>
+            <button id="importBtn" class="btn btn-ghost">Import data</button>
+            <input
+              id="importFile"
+              type="file"
+              accept="application/json"
+              hidden
+            />
+            <button id="clearAllBtn" class="btn btn-danger">
+              Clear all data
+            </button>
+          </div>
+        </article>
+
+        <article class="card settings-card">
+          <h3>App info</h3>
+          <p>Version: 1.0.0</p>
+          <p>Storage: SQLite file at prayer-diary/diary.db</p>
+          <p>Backup: prayer-diary/backup/diary-backup.json</p>
+        </article>
+      </section>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Primary navigation">
+      <button class="nav-item active" data-view="home">
+        <span class="nav-icon">🏠</span>
+        <span>Home</span>
+      </button>
+      <button class="nav-item" data-view="checkin">
+        <span class="nav-icon">🕊️</span>
+        <span>Check-in</span>
+      </button>
+      <button class="nav-item" data-view="journal">
+        <span class="nav-icon">📖</span>
+        <span>Journal</span>
+      </button>
+      <button class="nav-item" data-view="prayers">
+        <span class="nav-icon">🙏</span>
+        <span>Prayers</span>
+      </button>
+      <button class="nav-item" data-view="stats">
+        <span class="nav-icon">📊</span>
+        <span>Stats</span>
+      </button>
+      <button class="nav-item" data-view="settings">
+        <span class="nav-icon">⚙️</span>
+        <span>Settings</span>
+      </button>
+    </nav>
+
+    <dialog id="entryModal" class="modal">
+      <article class="modal-card">
+        <button class="close" id="closeEntryModal">✕</button>
+        <div id="entryModalContent"></div>
+      </article>
+    </dialog>
+
+    <dialog id="prayerModal" class="modal">
+      <article class="modal-card">
+        <button class="close" id="closePrayerModal">✕</button>
+        <h3>Add a prayer</h3>
+        <label>
+          Title <input id="prayerTitle" type="text" maxlength="120" />
+        </label>
+        <label>
+          Prayer text <textarea id="prayerBody" rows="6"></textarea>
+        </label>
+        <label>Date <input id="prayerDate" type="date" /></label>
+        <button id="savePrayerBtn" class="btn btn-primary">Save Prayer</button>
+      </article>
+    </dialog>
+
+    <dialog id="statusModal" class="modal">
+      <article class="modal-card">
+        <button class="close" id="closeStatusModal">✕</button>
+        <h3 id="statusModalTitle">Update prayer status</h3>
+        <label>
+          Notes
+          <textarea
+            id="statusNotes"
+            rows="5"
+            placeholder="How did this unfold?"
+          ></textarea>
+        </label>
+        <button id="saveStatusBtn" class="btn btn-primary">Save</button>
+      </article>
+    </dialog>
+
+    <script src="app.js"></script>
+  </body>
+</html>
